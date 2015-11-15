@@ -1,17 +1,12 @@
----
-title: 'Reproducible Research: Peer Assessment 1'
-output:
-  html_document:
-    keep_md: yes
-  pdf_document: default
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
 We check if raw data exists in the working directory. If it needs we download and extrach data from archive. Then we load raw data into the R.
 
-```{r, echo=TRUE}
+
+```r
 dataFileName <- "activity.csv"
 if (!file.exists(dataFileName)) {
   zipFileName <- "activity.zip"
@@ -29,18 +24,24 @@ data <- read.csv(dataFileName, colClasses = c("numeric", "Date", "numeric"))
 
 We make a histogram of the total number of steps taken each day:
 
-```{r, echo=TRUE}
+
+```r
 library(plyr)
 dataByDay <- ddply(data, .(date), summarise, sumSteps = sum(steps, na.rm=TRUE), meanSteps = mean(steps, na.rm=TRUE))
 hist(dataByDay$sumSteps, breaks=20, col="yellow", main="Histogram of the total number of steps taken each day", xlab="Steps per day")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 #library(ggplot2)
 #qplot(sumSteps, data=dataByDay, geom="histogram", main="Histogram of the total number of steps taken each day", xlab = "Steps per day")
 ```
 
-For total number of steps taken per day we have the following **mean**=`r round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2)` and **median**=`r as.character( round(median(dataByDay$sumSteps, na.rm=TRUE), digits=2) )`. Calculation expressions:
+For total number of steps taken per day we have the following **mean**=9354.23 and **median**=10395. Calculation expressions:
 
-```{r, echo=TRUE, eval=FALSE}
+
+```r
 round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2)
 as.character( round(median(dataByDay$sumSteps, na.rm=TRUE), digits=2) )
 ```
@@ -50,14 +51,18 @@ as.character( round(median(dataByDay$sumSteps, na.rm=TRUE), digits=2) )
 
 We make a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis):
 
-```{r, echo=TRUE}
+
+```r
 dataByInterval <- ddply(data, .(interval), summarise, meanSteps = mean(steps, na.rm=TRUE))
 plot(dataByInterval$interval, dataByInterval$meanSteps, type="l", main="Time series of the average number of steps per the 5-minute interval", xlab="Interval", ylab="Mean of steps")
 ```
 
-The 5-minute interval **`r dataByInterval[dataByInterval$meanSteps == max(dataByInterval$meanSteps),]$interval`**, on average across all the days in the dataset, contains the maximum number of steps. Calculation expression:
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
 
-```{r, echo=TRUE, eval=FALSE}
+The 5-minute interval **835**, on average across all the days in the dataset, contains the maximum number of steps. Calculation expression:
+
+
+```r
 dataByInterval[dataByInterval$meanSteps == max(dataByInterval$meanSteps),]$interval
 ```
 
@@ -66,16 +71,29 @@ dataByInterval[dataByInterval$meanSteps == max(dataByInterval$meanSteps),]$inter
 
 We calculate the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
-```{r, echo=TRUE}
+
+```r
 # Missing row count
 missingRowCount <- nrow(data) - nrow(data[complete.cases(data),]); missingRowCount
+```
+
+```
+## [1] 2304
+```
+
+```r
 # Missing steps count
 missingStepsCount <- sum(is.na(data$steps)); missingStepsCount
 ```
 
+```
+## [1] 2304
+```
+
 Then we devise a strategy for filling in all of the missing values in the dataset. We use the mean for that day, and the mean for that 5-minute interval. After that we create a new dataset that is equal to the original dataset but with the missing data filled in.
 
-```{r, echo=TRUE}
+
+```r
 suppressMessages(library(dplyr))
 dataWithMeans <- data %>%
   mutate(id = 1:nrow(data)) %>%
@@ -90,17 +108,32 @@ dataFilled <- data.frame(data, stepsFilled)
 head(dataFilled)
 ```
 
+```
+##   steps       date interval stepsFilled
+## 1    NA 2012-10-01        0   1.7169811
+## 2    NA 2012-10-01        5   0.3396226
+## 3    NA 2012-10-01       10   0.1320755
+## 4    NA 2012-10-01       15   0.1509434
+## 5    NA 2012-10-01       20   0.0754717
+## 6    NA 2012-10-01       25   2.0943396
+```
+
 We make a histogram of the total number of filled steps taken each day:
 
-```{r, echo=TRUE}
+
+```r
 dataFilledByDay <- ddply(dataFilled, .(date), summarise, sumSteps = sum(stepsFilled))
 hist(dataFilledByDay$sumSteps, breaks=20, col="red", main="Histogram of the total number of filled steps taken each day", xlab="Steps per day")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
+
+```r
 meanFilledStepsTotal = round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2)
 medianFilledStepsTotal = as.character( round(median(dataByDay$sumSteps, na.rm=TRUE), digits=2) )
 ```
 
-For total number of filled steps taken per day we have the following **mean**=`r meanFilledStepsTotal` and **median**=`r medianFilledStepsTotal`.
+For total number of filled steps taken per day we have the following **mean**=9354.23 and **median**=10395.
 
 As we see, existance of NA values in steps variable leads to big frequency at zero value in histogram.
 
@@ -109,7 +142,8 @@ As we see, existance of NA values in steps variable leads to big frequency at ze
 
 We create a new factor variable indicating whether a given date is a weekday or weekend day.
 
-```{r, echo=TRUE}
+
+```r
 #install.packages("timeDate")
 library(timeDate)
 dataFilledWeekdays <- dataFilled %>% mutate(weekday = isWeekday(date))
@@ -118,7 +152,8 @@ dataFilledWeekdays$weekday = factor(dataFilledWeekdays$weekday, labels=c("weeken
 
 Then we make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
-```{r, echo=TRUE}
+
+```r
 dataFWByInterval <- ddply(dataFilledWeekdays, .(interval, weekday), summarise, meanSteps = mean(stepsFilled))
 
 #datWeekday <- dataFWByInterval[as.character(dataFWByInterval$weekday) == "weekday",]
@@ -130,5 +165,7 @@ dataFWByInterval <- ddply(dataFilledWeekdays, .(interval, weekday), summarise, m
 library(lattice)
 xyplot(meanSteps ~ interval | weekday, data = dataFWByInterval, layout = c(1,2), type="l", xlab="Interval", ylab="Number of steps", main="Time series of the average number of steps per the 5-minute interval")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
 
  
