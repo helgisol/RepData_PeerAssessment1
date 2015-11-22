@@ -129,11 +129,11 @@ hist(dataFilledByDay$sumSteps, breaks=20, col="red", main="Histogram of the tota
 ![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
 ```r
-meanFilledStepsTotal = round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2)
-medianFilledStepsTotal = as.character( round(median(dataByDay$sumSteps, na.rm=TRUE), digits=2) )
+meanFilledStepsTotal = as.character( round(mean(dataFilledByDay$sumSteps, na.rm=TRUE), digits=2) )
+medianFilledStepsTotal = as.character( round(median(dataFilledByDay$sumSteps, na.rm=TRUE), digits=2) )
 ```
 
-For total number of filled steps taken per day we have the following **mean**=9354.23 and **median**=10395.
+For total number of filled steps taken per day we have the following **mean**=10766.19 and **median**=10766.19.
 
 As we see, existance of NA values in steps variable leads to big frequency at zero value in histogram.
 

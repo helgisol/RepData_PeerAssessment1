@@ -96,8 +96,8 @@ We make a histogram of the total number of filled steps taken each day:
 dataFilledByDay <- ddply(dataFilled, .(date), summarise, sumSteps = sum(stepsFilled))
 hist(dataFilledByDay$sumSteps, breaks=20, col="red", main="Histogram of the total number of filled steps taken each day", xlab="Steps per day")
 
-meanFilledStepsTotal = round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2)
-medianFilledStepsTotal = as.character( round(median(dataByDay$sumSteps, na.rm=TRUE), digits=2) )
+meanFilledStepsTotal = as.character( round(mean(dataFilledByDay$sumSteps, na.rm=TRUE), digits=2) )
+medianFilledStepsTotal = as.character( round(median(dataFilledByDay$sumSteps, na.rm=TRUE), digits=2) )
 ```
 
 For total number of filled steps taken per day we have the following **mean**=`r meanFilledStepsTotal` and **median**=`r medianFilledStepsTotal`.
