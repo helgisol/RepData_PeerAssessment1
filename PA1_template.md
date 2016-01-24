@@ -27,22 +27,23 @@ We make a histogram of the total number of steps taken each day:
 
 ```r
 library(plyr)
-dataByDay <- ddply(data, .(date), summarise, sumSteps = sum(steps, na.rm=TRUE), meanSteps = mean(steps, na.rm=TRUE))
+#dataByDay <- ddply(data, .(date), summarise, sumSteps = sum(steps, na.rm=TRUE), meanSteps = mean(steps, na.rm=TRUE))
+dataByDay <- ddply(data, .(date), summarise, sumSteps = sum(steps), meanSteps = mean(steps))
 hist(dataByDay$sumSteps, breaks=20, col="yellow", main="Histogram of the total number of steps taken each day", xlab="Steps per day")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)
 
 ```r
 #library(ggplot2)
 #qplot(sumSteps, data=dataByDay, geom="histogram", main="Histogram of the total number of steps taken each day", xlab = "Steps per day")
 ```
 
-For total number of steps taken per day we have the following **mean**=9354.23 and **median**=10395. Calculation expressions:
+For total number of steps taken per day we have the following **mean**=10766.19 and **median**=10765. Calculation expressions:
 
 
 ```r
-round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2)
+as.character( round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2) )
 as.character( round(median(dataByDay$sumSteps, na.rm=TRUE), digits=2) )
 ```
 
@@ -57,7 +58,7 @@ dataByInterval <- ddply(data, .(interval), summarise, meanSteps = mean(steps, na
 plot(dataByInterval$interval, dataByInterval$meanSteps, type="l", main="Time series of the average number of steps per the 5-minute interval", xlab="Interval", ylab="Mean of steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)
 
 The 5-minute interval **835**, on average across all the days in the dataset, contains the maximum number of steps. Calculation expression:
 
@@ -126,7 +127,7 @@ dataFilledByDay <- ddply(dataFilled, .(date), summarise, sumSteps = sum(stepsFil
 hist(dataFilledByDay$sumSteps, breaks=20, col="red", main="Histogram of the total number of filled steps taken each day", xlab="Steps per day")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)
 
 ```r
 meanFilledStepsTotal = as.character( round(mean(dataFilledByDay$sumSteps, na.rm=TRUE), digits=2) )
@@ -135,7 +136,7 @@ medianFilledStepsTotal = as.character( round(median(dataFilledByDay$sumSteps, na
 
 For total number of filled steps taken per day we have the following **mean**=10766.19 and **median**=10766.19.
 
-As we see, existance of NA values in steps variable leads to big frequency at zero value in histogram.
+As we see, existance of NA values in steps' variable leads to less kurtosis coefficient, less frequency at mode position, and existing small difference between mean and median.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -166,6 +167,6 @@ library(lattice)
 xyplot(meanSteps ~ interval | weekday, data = dataFWByInterval, layout = c(1,2), type="l", xlab="Interval", ylab="Number of steps", main="Time series of the average number of steps per the 5-minute interval")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)
 
  

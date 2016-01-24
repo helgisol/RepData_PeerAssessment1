@@ -31,17 +31,18 @@ We make a histogram of the total number of steps taken each day:
 
 ```{r, echo=TRUE}
 library(plyr)
-dataByDay <- ddply(data, .(date), summarise, sumSteps = sum(steps, na.rm=TRUE), meanSteps = mean(steps, na.rm=TRUE))
+#dataByDay <- ddply(data, .(date), summarise, sumSteps = sum(steps, na.rm=TRUE), meanSteps = mean(steps, na.rm=TRUE))
+dataByDay <- ddply(data, .(date), summarise, sumSteps = sum(steps), meanSteps = mean(steps))
 hist(dataByDay$sumSteps, breaks=20, col="yellow", main="Histogram of the total number of steps taken each day", xlab="Steps per day")
 
 #library(ggplot2)
 #qplot(sumSteps, data=dataByDay, geom="histogram", main="Histogram of the total number of steps taken each day", xlab = "Steps per day")
 ```
 
-For total number of steps taken per day we have the following **mean**=`r round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2)` and **median**=`r as.character( round(median(dataByDay$sumSteps, na.rm=TRUE), digits=2) )`. Calculation expressions:
+For total number of steps taken per day we have the following **mean**=`r as.character( round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2) )` and **median**=`r as.character( round(median(dataByDay$sumSteps, na.rm=TRUE), digits=2) )`. Calculation expressions:
 
 ```{r, echo=TRUE, eval=FALSE}
-round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2)
+as.character( round(mean(dataByDay$sumSteps, na.rm=TRUE), digits=2) )
 as.character( round(median(dataByDay$sumSteps, na.rm=TRUE), digits=2) )
 ```
 
@@ -102,7 +103,7 @@ medianFilledStepsTotal = as.character( round(median(dataFilledByDay$sumSteps, na
 
 For total number of filled steps taken per day we have the following **mean**=`r meanFilledStepsTotal` and **median**=`r medianFilledStepsTotal`.
 
-As we see, existance of NA values in steps variable leads to big frequency at zero value in histogram.
+As we see, existance of NA values in steps' variable leads to less kurtosis coefficient, less frequency at mode position, and existing small difference between mean and median.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
